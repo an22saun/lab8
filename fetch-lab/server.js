@@ -32,15 +32,35 @@ app.get('/api/greet/:name', (req, res) => {
 });
 
 app.get('/api/math/', (req, res) => {
-    const result = req.query.a + req.query.b;
+    let a = parseInt(req.query.a, 10);
+    let b =  parseInt(req.query.b, 10) ;
+    let op = req.query.operation; 
+    let result;
+    if (op === 'add') {
+        result = a + b;
+    } else if (op === 'subtract') {
+        result = a - b;
+    } else if (op === 'multiply') {
+        result = a * b;
+    } else if (op === 'divide') {
+        if(a ===0 ){
+            res.status(400).json({ error: 'Cannot divide by zero' });
+        }else{
+            result =  a / b;
+        }
+        
+    } else {
+        res.status(400).json({ error: 'Invalid or missing operation. Use: add, subtract, multiply, divide' });
+    }
     const data = {
-        "a": req.query.a,
-        "b": req.query.b,
-        "operation": req.query.operation,
+        "a": a,
+        "b": b,
+        "operation": op,
         "result": result
     }
     res.type('json').send(data);
 });
+
 // ---- Your endpoints go above this line ----
 
 const PORT = process.env.PORT || 8080;
