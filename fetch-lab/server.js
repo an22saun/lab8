@@ -63,6 +63,31 @@ app.get('/api/math/', (req, res) => {
 
 // ---- Your endpoints go above this line ----
 
+app.get('/api/slow', (req, res) => {
+  setTimeout(() => {
+    res.json({
+      message: "Sorry for the wait!",
+      delayMs: 3000
+    });
+  }, 3000);
+});
+
+app.get('/api/unreliable', (req, res) => {
+  const rand = Math.random();
+  if (rand < 0.5) {
+    res.status(500).json({
+      error: "Server had a bad day. Try again!"
+    });
+  } else {
+    res.json({
+      message: "Lucky! It worked this time.",
+      luckyNumber: Math.floor(Math.random() * 100)
+    });
+  }
+});
+
+
+
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
