@@ -9,6 +9,12 @@ app.use(express.static('public'));
 // Parse JSON request bodies (needed for POST)
 app.use(express.json());
 
+//part B7 variables
+let messages = [
+        { id: 1, text: "Welcome to the message board!", author: "Admin" },
+    ];
+let nextId = 2; 
+
 // ---- Your endpoints go below this line ----
 app.get('/hello', (req, res) => {
     res.type('text').send('Hello from the server!');
@@ -86,6 +92,31 @@ app.get('/api/unreliable', (req, res) => {
   }
 });
 
+app.get('/api/messages', (req,res) =>{
+    const data = {
+        "messages": messages,
+    }
+    res.type('json').send(data);
+    
+});
+
+app.post('/api/messages', (req, res) => {
+    const { text, author } = req.body;
+    // Validate that both fields are present
+    if (!text || !author) {
+        return res.status(400).json({ error: 'Both "text" and "author" are required.' });
+    }
+    // Create the new message object
+    const data = {
+        id: nextId,
+        text: text,
+        author: author
+    };
+    // Add it to our in-memory array
+    messages.push(data);
+    // Respond with 201 Created and the new message
+    res.status(201).json(data);
+});
 
 
 const PORT = process.env.PORT || 8080;
